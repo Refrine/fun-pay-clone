@@ -3,8 +3,11 @@ package com.example.funpay_clone.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.funpay_clone.models.Product;
 import com.example.funpay_clone.repository.ProductRepository;
 
 import lombok.Data;
@@ -25,9 +28,20 @@ public class ProductController {
 
         return "index";
     }
-    
 
+    @GetMapping("/products/new")
+    public String showCreateForm(Model model){
+        model.addAttribute("product", new Product());
 
+         return "create-product";
+    }    
+
+    @PostMapping("/products")
+    public String createProduct(@ModelAttribute Product product ){
+        productRepo.save(product);
+
+        return "redirect:/";
+    }
 
 
 }

@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FunPay Clone - Главная</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Иконки (Font Awesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gray-50">
-    <!-- Шапка -->
     <header class="bg-white shadow-sm">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold text-indigo-600">FunPay Clone</h1>
@@ -25,31 +22,26 @@
         </div>
     </header>
 
-    <!-- Основной контент -->
     <main class="container mx-auto px-4 py-8">
-        <!-- Фильтры -->
         <div class="mb-8 p-4 bg-white rounded-lg shadow">
             <h2 class="text-xl font-semibold mb-4">Фильтры</h2>
             <form th:action="@{/}" method="get" class="flex flex-wrap gap-4">
                 <input type="text" name="search" placeholder="Поиск..." 
                        th:value="${param.search}" 
                        class="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <select name="category" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option value="">Все категории</option>
-                    <option th:each="category : ${categories}" 
-                            th:value="${category.id}" 
-                            th:text="${category.name}"
-                            th:selected="${param.category == category.id}">
-                    </option>
-                </select>
                 <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition">
-                    Применить
+                    Поиск
                 </button>
             </form>
         </div>
 
-        <!-- Список товаров -->
-        <h2 class="text-2xl font-bold mb-6">Популярные товары</h2>
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Товары</h2>
+            <a th:href="@{/products/new}" 
+               class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
+                <i class="fas fa-plus mr-2"></i> Создать товар
+            </a>
+        </div>
         
         <div th:if="${products.empty}" class="text-center py-12">
             <i class="fas fa-box-open text-4xl text-gray-300 mb-4"></i>
@@ -57,17 +49,11 @@
         </div>
 
         <div th:unless="${products.empty}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Карточка товара -->
-            <div th:each="product : ${products}" class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition">
-                <!-- Добавлено условное отображение изображения (если imageUrl не задан, используется заглушка) -->
-                <img th:src="${product.imageUrl != null && !product.imageUrl.isEmpty()} ? ${product.imageUrl} : 'https://via.placeholder.com/300'}" 
-                     th:alt="${product.name}" 
-                     class="w-full h-48 object-cover">
+            <div th:each="product : ${products}" class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition p-6">
                 <div class="p-4">
                     <h3 class="font-semibold text-lg mb-2" th:text="${product.name}">Название товара</h3>
                     <p class="text-gray-600 mb-4" th:text="${product.description}">Описание товара</p>
                     <div class="flex justify-between items-center">
-                        <!-- Форматирование цены (без десятичных, так как price у вас int) -->
                         <span class="font-bold text-indigo-600" th:text="'$' + ${product.price}">$0</span>
                         <form th:action="@{'/cart/add/' + ${product.id}}" method="post">
                             <button type="submit" class="bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition">
@@ -80,7 +66,6 @@
         </div>
     </main>
 
-    <!-- Подвал -->
     <footer class="bg-gray-800 text-white py-8">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between">
@@ -93,20 +78,18 @@
                         <h4 class="font-semibold mb-3">Меню</h4>
                         <ul class="space-y-2">
                             <li><a th:href="@{/}" class="text-gray-400 hover:text-white transition">Главная</a></li>
-                            <li><a th:href="@{/catalog}" class="text-gray-400 hover:text-white transition">Каталог</a></li>
                         </ul>
                     </div>
                     <div>
                         <h4 class="font-semibold mb-3">Контакты</h4>
                         <ul class="space-y-2">
                             <li class="text-gray-400"><i class="fas fa-envelope mr-2"></i> support@funpayclone.com</li>
-                            <li class="text-gray-400"><i class="fas fa-phone mr-2"></i> +7 (123) 456-7890</li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                <p>© 2023 FunPay Clone. Все права защищены.</p>
+                <p>© 2025 FunPay Clone. Все права защищены.</p>
             </div>
         </div>
     </footer>

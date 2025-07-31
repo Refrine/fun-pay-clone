@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация успешна - FunPay Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .success-container {
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+        .countdown {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <div class="success-container bg-white rounded-lg shadow-md p-6 text-center">
+            <!-- Иконка успеха -->
+            <div class="text-green-500 text-5xl mb-4">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            
+            <!-- Заголовок -->
+            <h1 class="text-2xl font-bold mb-2">Регистрация успешно завершена!</h1>
+            
+            <!-- Информация о пользователе -->
+            <p class="text-gray-600 mb-1">
+                Добро пожаловать, <span class="font-semibold" th:text="${username}"></span>!
+            </p>
+            <p class="text-gray-500 text-sm mb-6">
+                На почту <span class="font-mono" th:text="${email}"></span> отправлено письмо с подтверждением
+            </p>
+            
+            <!-- Кнопки действий -->
+            <div class="flex flex-col space-y-3">
+                <a th:href="@{/auth/login}" 
+                   class="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Войти в аккаунт
+                </a>
+                <a th:href="@{/}" 
+                   class="border border-gray-300 px-6 py-3 rounded-md hover:bg-gray-50 transition">
+                    <i class="fas fa-home mr-2"></i> На главную
+                </a>
+            </div>
+            
+            <!-- Таймер перенаправления -->
+            <div class="mt-6 pt-4 border-t border-gray-200">
+                <p class="countdown">
+                    Автоматическое перенаправление на страницу входа через 
+                    <span id="countdown">5</span> сек...
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Таймер перенаправления
+        let seconds = 5;
+        const countdownElement = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            seconds--;
+            countdownElement.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(timer);
+                window.location.href = '/auth/login';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

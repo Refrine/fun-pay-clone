@@ -41,7 +41,7 @@
                     </a>
                 </div>
                 
-                <!-- Кнопка добавления товара -->
+                
                 <a th:href="@{/products/new}" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">
                     <i class="fas fa-plus mr-2"></i> Добавить товар
                 </a>
@@ -50,12 +50,12 @@
     </header>
 
     <main class="container mx-auto px-4 py-8">
-        <!-- Сообщения об успешных операциях -->
+        
         <div th:if="${successMessage}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
             <span th:text="${successMessage}"></span>
         </div>
 
-        <!-- Сообщения об ошибках авторизации -->
+        
         <div th:if="${param.error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
             Неверные логин или пароль
         </div>
@@ -63,7 +63,7 @@
             Вы успешно вышли из системы
         </div>
 
-        <!-- Поиск и фильтры -->
+       
         <div class="mb-8 p-4 bg-white rounded-lg shadow">
             <form th:action="@{/}" method="get" class="flex flex-wrap gap-4 items-end">
                 <div class="flex-1">
@@ -78,7 +78,7 @@
             </form>
         </div>
 
-        <!-- Список товаров -->
+        
         <div th:if="${products.empty}" class="text-center py-12">
             <i class="fas fa-box-open text-4xl text-gray-300 mb-4"></i>
             <p class="text-gray-500">Товары не найдены</p>
@@ -88,7 +88,7 @@
         </div>
 
         <div th:unless="${products.empty}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <!-- Карточка товара -->
+            
             <div th:each="product : ${products}" 
                  class="product-card bg-white rounded-lg shadow-md overflow-hidden">
                 
@@ -123,7 +123,7 @@
 
     <footer class="bg-gray-800 text-white py-6 mt-12">
         <div class="container mx-auto px-4 text-center">
-            <p>© 2023 FunPay Clone. Все права защищены.</p>
+            <p>© 2025 FunPay Clone. Все права защищены.</p>
         </div>
     </footer>
 

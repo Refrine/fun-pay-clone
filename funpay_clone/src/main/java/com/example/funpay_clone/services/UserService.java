@@ -24,6 +24,16 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     
+     * @param username имя пользователя
+     * @param email email
+     * @param password пароль 
+     * @param roles набор ролей
+     * @return зарегистрированный пользователь
+     * @throws UserAlreadyExistsException если пользователь с таким именем или email уже существует
+     * @throws IllegalArgumentException если данные некорректны
+     */
     @Transactional
     public User registerUser(String username, String email, String password, Set<String> roles) {
         validateUserData(username, email, password, roles);
@@ -34,27 +44,23 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setRoles(roles);
 
-        try {
-            User savedUser = userRepository.save(user);
-            log.info("Пользователь {} успешно зарегистрирован", username);
-            return savedUser;
-        } catch (Exception e) {
-            log.error("Ошибка при сохранении пользователя: {}", e.getMessage());
-            throw new UserRegistrationException("Ошибка при регистрации пользователя", e);
-        }
+        User savedUser = userRepository.save(user);
+        log.info("Пользователь {} успешно зарегистрирован (ID: {})", username, savedUser.getId());
+        return savedUser;
     }
 
+    
     private void validateUserData(String username, String email, String password, Set<String> roles) {
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Имя пользователя не может быть пустым");
         }
         
-        if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("Email не может быть пустым");
+        if (email == null || !email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            throw new IllegalArgumentException("Некорректный email");
         }
         
-        if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Пароль не может быть пустым");
+        if (password == null || password.length() < 6) {
+            throw new IllegalArgumentException("Пароль должен содержать минимум 6 символов");
         }
         
         if (roles == null || roles.isEmpty()) {
@@ -70,11 +76,21 @@ public class UserService {
         }
     }
 
+    
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
+    
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    
     public static class UserRegistrationException extends RuntimeException {
+        public UserRegistrationException(String message) {
+            super(message);
+        }
         public UserRegistrationException(String message, Throwable cause) {
             super(message, cause);
         }

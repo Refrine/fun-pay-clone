@@ -3,11 +3,10 @@ package com.example.funpay_clone.controllers;
 import com.example.funpay_clone.services.UserService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -16,7 +15,7 @@ import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Slf4j
-@RestController
+@Controller
 @RequestMapping("/auth")
 public class AuthController {
     private final UserService userService;
@@ -25,22 +24,24 @@ public class AuthController {
         this.userService = userService;
     }
 
+    
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> registerJson(@Valid @RequestBody RegisterRequest request) {
-        return processRegistration(request);
+    public String registerJson(@Valid @RequestBody RegisterRequest request, RedirectAttributes redirectAttributes) {
+        return processRegistration(request, redirectAttributes);
     }
 
+    
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<?> registerForm(@Valid RegisterRequestForm request) {
+    public String registerForm(@Valid RegisterRequestForm request, RedirectAttributes redirectAttributes) {
         RegisterRequest jsonRequest = new RegisterRequest();
         jsonRequest.setUsername(request.getUsername());
         jsonRequest.setEmail(request.getEmail());
         jsonRequest.setPassword(request.getPassword());
         jsonRequest.setRole(request.getRole());
-        return processRegistration(jsonRequest);
+        return processRegistration(jsonRequest, redirectAttributes);
     }
 
-    private ResponseEntity<?> processRegistration(RegisterRequest request) {
+    private String processRegistration(RegisterRequest request, RedirectAttributes redirectAttributes) {
         try {
             userService.registerUser(
                 request.getUsername(),
@@ -48,13 +49,17 @@ public class AuthController {
                 request.getPassword(),
                 Set.of(request.getRole())
             );
-            return ResponseEntity.ok(new SuccessResponse("Регистрация успешна"));
+            log.info("Пользователь {} успешно зарегистрирован", request.getUsername());
+            redirectAttributes.addFlashAttribute("successMessage", "Регистрация прошла успешно!");
+            return "redirect:/"; 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+            log.error("Ошибка регистрации: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/auth/register"; 
         }
     }
 
-    // DTO для JSON
+   
     @Data
     public static class RegisterRequest {
         @NotBlank @Size(min=3, max=20) private String username;
@@ -70,17 +75,5 @@ public class AuthController {
         private String email;
         private String password;
         private String role;
-    }
-
-    @Data
-    public static class SuccessResponse {
-        private final String message;
-        private final boolean success = true;
-    }
-
-    @Data
-    public static class ErrorResponse {
-        private final String message;
-        private final boolean success = false;
     }
 }
